@@ -19,6 +19,8 @@ To scan the host 192.168.195.168 in 192.168.195.1 network, run:
 
 ``vsmon-scanner --ip_bind 192.168.195.1 --dst_ip 192.168.195.168``
 
+![scanner](./vsmon-scanner.gif)
+
 ## Installation
 
 Run 'pip install -r requirements.txt' to install dependencies.
