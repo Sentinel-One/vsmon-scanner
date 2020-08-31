@@ -11,6 +11,10 @@ from thread import *
 import threading
 
 
+'''
+Msvsmon stores the list of probes' UUIDs and replies a prbobe only once.
+So we need to regenerate the UUID for every probe. 
+'''
 PROBE1 = r'<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsd="http://schemas.xmlsoap.org/ws/2005/04/discovery" xmlns:dp0="http://www.microsoft.com/visualstudio/debugger/discovery/16.0"><soap:Header><wsa:To>urn:schemas-xmlsoap-org:ws:2005:04:discovery</wsa:To><wsa:Action>http://schemas.xmlsoap.org/ws/2005/04/discovery/Probe</wsa:Action><wsa:MessageID>urn:uuid:'
 
 #b020e78c-1688-4d27-affc-578956a15f7a
@@ -18,10 +22,10 @@ PROBE1 = r'<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http
 PROBE2 = '</wsa:MessageID></soap:Header><soap:Body><wsd:Probe><wsd:Types>dp0:msvsmon</wsd:Types></wsd:Probe></soap:Body></soap:Envelope>'
 
 DEBUG = False
-SSDP_BROADCAST = '239.255.255.250'
+SSDP_BROADCAST = '239.255.255.250' #well-known multicast IPv4 address for SSDP discovery
 SSDP_PORT = 3702
 NUM_OF_PROBES = 7 #For some reasons VS sends 7 probes
-BIND_PORT_START = 60770
+BIND_PORT_START = 60770 #Initial port binding address
 
 
 def trace(content):
@@ -31,6 +35,10 @@ def trace(content):
 def safer_print(content):        
     print "{0}\n".format(content),
 
+'''
+Runs in a dedicated thread
+Sends XML probe to the destination IP
+'''
 def threaded(ip_bind, port_bind, ip_dst):
     
     try:
@@ -62,6 +70,9 @@ def threaded(ip_bind, port_bind, ip_dst):
         safer_print('Exception in thread: {}'.format(get_ident()))
         trace(traceback.format_exc())
 
+'''
+Iterates over all network adapters, binds to every adapter and sends XML probe to SSDP_BROADCAST
+'''
 def broadcast():
     port = BIND_PORT_START
     adapters = ifaddr.get_adapters()
@@ -75,8 +86,11 @@ def broadcast():
                 start_new_thread(threaded, (ip.ip, port, SSDP_BROADCAST))
         port = port + 1
 
+'''
+If binding IP specified bind to the IP, otherwise bind to all adapters.
+If destination IP specified, send the probe to the IP, otherwise broadcast the probe.
+'''
 def main(ip_bind, ip_dst):
-    
     while True:
         port = BIND_PORT_START
         if (ip_bind != None):
@@ -87,7 +101,7 @@ def main(ip_bind, ip_dst):
         else:
             broadcast()
         time.sleep(20)
-    
+
 if __name__ == '__main__':
     import argparse
 
