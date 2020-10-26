@@ -4,20 +4,19 @@ import ifaddr
 import uuid
 import argparse
 import traceback
-
 import xml.etree.ElementTree as ET
 
-from thread import *
-import threading
+from thread import start_new_thread, get_ident
 
 
 '''
 Msvsmon stores the list of probes' UUIDs and replies a prbobe only once.
 So we need to regenerate the UUID for every probe. 
 '''
-PROBE1 = r'<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsd="http://schemas.xmlsoap.org/ws/2005/04/discovery" xmlns:dp0="http://www.microsoft.com/visualstudio/debugger/discovery/16.0"><soap:Header><wsa:To>urn:schemas-xmlsoap-org:ws:2005:04:discovery</wsa:To><wsa:Action>http://schemas.xmlsoap.org/ws/2005/04/discovery/Probe</wsa:Action><wsa:MessageID>urn:uuid:'
-
-#b020e78c-1688-4d27-affc-578956a15f7a
+PROBE1 = r'<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"'\
+r' xmlns:wsd="http://schemas.xmlsoap.org/ws/2005/04/discovery"'\
+r' xmlns:dp0="http://www.microsoft.com/visualstudio/debugger/discovery/16.0"><soap:Header>'\
+r'<wsa:To>urn:schemas-xmlsoap-org:ws:2005:04:discovery</wsa:To><wsa:Action>http://schemas.xmlsoap.org/ws/2005/04/discovery/Probe</wsa:Action><wsa:MessageID>urn:uuid:'
 
 PROBE2 = '</wsa:MessageID></soap:Header><soap:Body><wsd:Probe><wsd:Types>dp0:msvsmon</wsd:Types></wsd:Probe></soap:Body></soap:Envelope>'
 
@@ -26,6 +25,7 @@ SSDP_BROADCAST = '239.255.255.250' #well-known multicast IPv4 address for SSDP d
 SSDP_PORT = 3702
 NUM_OF_PROBES = 7 #For some reasons VS sends 7 probes
 BIND_PORT_START = 60770 #Initial port binding address
+SCAN_PAUSE = 20
 
 
 def trace(content):
@@ -100,11 +100,9 @@ def main(ip_bind, ip_dst):
                 start_new_thread(threaded, (ip_bind, port, SSDP_BROADCAST))
         else:
             broadcast()
-        time.sleep(20)
+        time.sleep(SCAN_PAUSE)
 
 if __name__ == '__main__':
-    import argparse
-
     parser = argparse.ArgumentParser(description='Scan Msvsmon instances')
     parser.add_argument('--ip_dst', metavar='ip_dst', required=False,
                         help='IP address [optional, broadcast if not given]')

@@ -27,5 +27,6 @@ Run 'pip install -r requirements.txt' to install dependencies.
 
 ## Credits
 * This open-source project is backed by [SentinelOne](https://www.sentinelone.com/blog/)
-
-See more details about msvsmon.exe in the blog post: 
+* Project license could be found under [License file](License.md)
+ 
+See more details about msvsmon.exe in the [blog post](https://labs.sentinelone.com/misusing-msvsmon-and-the-windows-remote-debugger/)
