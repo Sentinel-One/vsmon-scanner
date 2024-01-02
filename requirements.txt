@@ -20,7 +20,7 @@ MarkupSafe==1.0
 pathlib2==2.3.0
 pickleshare==0.7.4
 plumbum==1.6.3
-prompt-toolkit==1.0.15
+prompt-toolkit==3.0.13
 Pygments==2.2.0
 pyparsing==2.2.0
 pyperclip==1.5.27
