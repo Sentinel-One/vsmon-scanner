@@ -28,7 +28,7 @@ pyreadline==2.1
 pysphere==0.1.7
 PyYAML==3.12
 requests==2.18.4
-rpyc==3.4.4
+rpyc==6.0.0
 scandir==1.5
 simplegeneric==0.8.1
 six==1.11.0
