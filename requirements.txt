@@ -38,3 +38,4 @@ wasm==1.1
 wcwidth==0.1.7
 win-unicode-console==0.5
 wincertstore==0.2
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
